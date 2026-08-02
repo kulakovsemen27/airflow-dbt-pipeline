@@ -19,3 +19,6 @@ tmp/
 .idea/
 .vscode/
 screenshots/
+source_data/
+docs/
+*.pdf
