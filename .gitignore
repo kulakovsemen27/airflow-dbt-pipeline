@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Airflow runtime files
+logs/
+airflow.db
+airflow.cfg
+webserver_config.py
+
+# Local application state
+.metabase/
+
+# IDEs
+.idea/
+.vscode/
+
+# Temporary files
+tmp/
+
+PLAN.md
