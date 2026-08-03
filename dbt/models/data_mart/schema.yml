@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: dim_player
+    description: One row per player.
+    columns:
+      - name: player_id
+        description: Unique identifier of the player.
+        tests:
+          - not_null
+          - unique
+      - name: registration_date
+        description: Date when the player registered.
+        tests:
+          - not_null
+      - name: registration_type
+        description: Type of player registration.
+        tests:
+          - not_null
+      - name: country
+        description: Country where the player registered.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the dimension was built.
+        tests:
+          - not_null
+
+  - name: dim_provider
+    description: One row per provider.
+    columns:
+      - name: provider_id
+        description: Unique identifier of the provider.
+        tests:
+          - not_null
+          - unique
+      - name: provider_name
+        description: Name of the provider.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the dimension was built.
+        tests:
+          - not_null
+
+  - name: dim_game
+    description: One row per game.
+    columns:
+      - name: game_id
+        description: Unique identifier of the game.
+        tests:
+          - not_null
+          - unique
+      - name: game_name
+        description: Name of the game.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the dimension was built.
+        tests:
+          - not_null
