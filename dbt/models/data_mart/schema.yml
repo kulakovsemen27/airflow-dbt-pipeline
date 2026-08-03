@@ -59,3 +59,178 @@ models:
         description: Timestamp when the dimension was built.
         tests:
           - not_null
+
+  - name: fact_deposit
+    description: One row per deposit.
+    columns:
+      - name: deposit_id
+        description: Unique identifier of the deposit.
+        tests:
+          - not_null
+          - unique
+      - name: player_id
+        description: Identifier of the player who made the deposit.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_player')
+                field: player_id
+      - name: provider_id
+        description: Identifier of the provider that processed the deposit.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_provider')
+                field: provider_id
+      - name: deposit_date
+        description: Date of the deposit.
+        tests:
+          - not_null
+      - name: currency
+        description: Currency code of the original deposit amount.
+        tests:
+          - not_null
+      - name: amount
+        description: Deposit amount in the original currency.
+        tests:
+          - not_null
+      - name: amount_usd
+        description: Deposit amount converted to US dollars.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the fact was built.
+        tests:
+          - not_null
+
+  - name: fact_withdrawal
+    description: One row per withdrawal.
+    columns:
+      - name: withdrawal_id
+        description: Unique identifier of the withdrawal.
+        tests:
+          - not_null
+          - unique
+      - name: player_id
+        description: Identifier of the player who made the withdrawal.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_player')
+                field: player_id
+      - name: provider_id
+        description: Identifier of the provider that processed the withdrawal.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_provider')
+                field: provider_id
+      - name: withdrawal_date
+        description: Date of the withdrawal.
+        tests:
+          - not_null
+      - name: currency
+        description: Currency code of the original withdrawal amount.
+        tests:
+          - not_null
+      - name: amount
+        description: Withdrawal amount in the original currency.
+        tests:
+          - not_null
+      - name: amount_usd
+        description: Withdrawal amount converted to US dollars.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the fact was built.
+        tests:
+          - not_null
+
+  - name: fact_bet
+    description: One row per bet.
+    columns:
+      - name: bet_id
+        description: Unique identifier of the bet.
+        tests:
+          - not_null
+          - unique
+      - name: player_id
+        description: Identifier of the player who placed the bet.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_player')
+                field: player_id
+      - name: game_id
+        description: Identifier of the game in which the bet was placed.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_game')
+                field: game_id
+      - name: provider_id
+        description: Identifier of the provider recorded in the bet.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_provider')
+                field: provider_id
+      - name: bet_date
+        description: Date when the bet was placed.
+        tests:
+          - not_null
+      - name: currency
+        description: Currency code of the original bet amount.
+        tests:
+          - not_null
+      - name: amount
+        description: Bet amount in the original currency.
+        tests:
+          - not_null
+      - name: amount_usd
+        description: Bet amount converted to US dollars.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the fact was built.
+        tests:
+          - not_null
+
+  - name: player_metrics
+    description: Daily financial and betting metrics per player.
+    columns:
+      - name: player_id
+        description: Identifier of the player.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_player')
+                field: player_id
+      - name: activity_date
+        description: Date for which the player metrics were aggregated.
+        tests:
+          - not_null
+      - name: deposits_amount_usd
+        description: Total deposit amount in US dollars for the player and date.
+        tests:
+          - not_null
+      - name: withdrawals_amount_usd
+        description: Total withdrawal amount in US dollars for the player and date.
+        tests:
+          - not_null
+      - name: bets_amount_usd
+        description: Total bet amount in US dollars for the player and date.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the aggregate model was built.
+        tests:
+          - not_null
