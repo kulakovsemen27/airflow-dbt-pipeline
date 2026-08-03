@@ -1,0 +1,25 @@
+name: nda_test_task
+version: 1.0.0
+config-version: 2
+
+profile: nda_test_task
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - target
+  - dbt_packages
+
+models:
+  nda_test_task:
+    staging:
+      +schema: staging
+      +materialized: table
+    data_mart:
+      +schema: data_mart
+      +materialized: table
+    data_mart_report:
+      +schema: data_mart_report
+      +materialized: table

@@ -22,3 +22,7 @@ screenshots/
 source_data/
 docs/
 *.pdf
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+dbt/.user.yml

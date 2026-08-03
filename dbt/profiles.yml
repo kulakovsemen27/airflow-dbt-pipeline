@@ -1,0 +1,13 @@
+nda_test_task:
+  target: docker
+
+  outputs:
+    docker:
+      type: postgres
+      host: "{{ env_var('DB_HOST', 'postgres') }}"
+      port: "{{ env_var('DB_PORT', '5432') | int }}"
+      user: "{{ env_var('POSTGRES_USER') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      dbname: "{{ env_var('POSTGRES_DB') }}"
+      schema: data_mart
+      threads: 4

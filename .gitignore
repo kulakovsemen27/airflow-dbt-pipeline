@@ -21,6 +21,12 @@ airflow.db
 airflow.cfg
 webserver_config.py
 
+# dbt runtime files
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+dbt/.user.yml
+
 # Local application state
 .metabase/
 
