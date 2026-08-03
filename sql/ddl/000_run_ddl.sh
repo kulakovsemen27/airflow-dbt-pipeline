@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 ddl_root="/docker-entrypoint-initdb.d"
-schema_directories=(raw staging dwh mart)
+schema_directories=(raw staging data_mart data_mart_report)
 ddl_files=()
 
 for schema_directory in "${schema_directories[@]}"; do
@@ -33,4 +33,3 @@ for ddl_file in "${ddl_files[@]}"; do
 done
 
 psql "${psql_arguments[@]}"
-
