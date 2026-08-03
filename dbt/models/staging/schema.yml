@@ -1,0 +1,187 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: players
+      - name: providers_map
+      - name: games_map
+      - name: currency_rates
+      - name: deposits
+      - name: withdrawals
+      - name: games
+
+models:
+  - name: players
+    columns:
+      - name: player_id
+        tests:
+          - not_null
+          - unique
+      - name: registration_date
+        tests:
+          - not_null
+      - name: registration_type
+        tests:
+          - not_null
+      - name: country
+        tests:
+          - not_null
+      - name: loaded_at
+        tests:
+          - not_null
+
+  - name: providers_map
+    columns:
+      - name: provider_id
+        tests:
+          - not_null
+          - unique
+      - name: provider_name
+        tests:
+          - not_null
+      - name: loaded_at
+        tests:
+          - not_null
+
+  - name: games_map
+    columns:
+      - name: game_id
+        tests:
+          - not_null
+          - unique
+      - name: game_name
+        tests:
+          - not_null
+      - name: provider_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('providers_map')
+                field: provider_id
+      - name: loaded_at
+        tests:
+          - not_null
+
+  - name: currency_rates
+    columns:
+      - name: rate_date
+        tests:
+          - not_null
+      - name: currency
+        tests:
+          - not_null
+      - name: currency_units_per_usd
+        tests:
+          - not_null
+      - name: loaded_at
+        tests:
+          - not_null
+
+  - name: deposits
+    columns:
+      - name: deposit_id
+        tests:
+          - not_null
+          - unique
+      - name: player_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('players')
+                field: player_id
+      - name: deposit_date
+        tests:
+          - not_null
+      - name: provider_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('providers_map')
+                field: provider_id
+      - name: amount
+        tests:
+          - not_null
+      - name: currency
+        tests:
+          - not_null
+      - name: loaded_at
+        tests:
+          - not_null
+
+  - name: withdrawals
+    columns:
+      - name: withdrawal_id
+        tests:
+          - not_null
+          - unique
+      - name: player_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('players')
+                field: player_id
+      - name: withdrawal_date
+        tests:
+          - not_null
+      - name: provider_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('providers_map')
+                field: provider_id
+      - name: amount
+        tests:
+          - not_null
+      - name: currency
+        tests:
+          - not_null
+      - name: loaded_at
+        tests:
+          - not_null
+
+  - name: games
+    columns:
+      - name: bet_id
+        tests:
+          - not_null
+          - unique
+      - name: player_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('players')
+                field: player_id
+      - name: game_date
+        tests:
+          - not_null
+      - name: amount
+        tests:
+          - not_null
+      - name: currency
+        tests:
+          - not_null
+      - name: provider_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('providers_map')
+                field: provider_id
+      - name: game_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('games_map')
+                field: game_id
+      - name: loaded_at
+        tests:
+          - not_null
