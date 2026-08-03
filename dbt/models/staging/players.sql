@@ -1,7 +1,10 @@
 {{
     config(
         schema='staging',
-        materialized='table'
+        materialized='table',
+        indexes=[
+            {'columns': ['player_id'], 'unique': True}
+        ]
     )
 }}
 
