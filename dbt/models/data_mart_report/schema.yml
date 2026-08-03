@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: metrics_overview
+    description: Daily financial and betting metrics by country and registration type.
+    columns:
+      - name: country
+        description: Country where the players registered.
+        tests:
+          - not_null
+      - name: registration_type
+        description: Type of player registration.
+        tests:
+          - not_null
+      - name: activity_date
+        description: Date for which the metrics were aggregated.
+        tests:
+          - not_null
+      - name: deposits_amount_usd
+        description: Total deposit amount in US dollars for the segment and date.
+        tests:
+          - not_null
+      - name: withdrawals_amount_usd
+        description: Total withdrawal amount in US dollars for the segment and date.
+        tests:
+          - not_null
+      - name: bets_amount_usd
+        description: Total bet amount in US dollars for the segment and date.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Timestamp when the report model was built.
+        tests:
+          - not_null
