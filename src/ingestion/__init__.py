@@ -1,2 +1,0 @@
-"""Source data ingestion package."""
-

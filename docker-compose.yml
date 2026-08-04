@@ -16,12 +16,13 @@ x-airflow-common: &airflow-common
     POSTGRES_DB: ${POSTGRES_DB}
     POSTGRES_USER: ${POSTGRES_USER}
     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    AIRFLOW_CONN_DWH_POSTGRES: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    SOURCE_DATA_DIR: /opt/airflow/source_data
     DBT_PROFILES_DIR: /opt/airflow/dbt
-    PYTHONPATH: /opt/airflow
+    PYTHONPATH: /opt/airflow/dags
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
-    - ./src:/opt/airflow/src
     - ./source_data:/opt/airflow/source_data:ro
     - ./dbt:/opt/airflow/dbt
 
