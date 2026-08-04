@@ -1,10 +1,7 @@
 {{
     config(
         schema='staging',
-        materialized='table',
-        indexes=[
-            {'columns': ['provider_id'], 'unique': True}
-        ]
+        materialized='table'
     )
 }}
 

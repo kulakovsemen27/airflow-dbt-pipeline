@@ -3,7 +3,7 @@
         schema='staging',
         materialized='table',
         indexes=[
-            {'columns': ['withdrawal_id'], 'unique': True}
+            {'columns': ['withdrawal_date']}
         ]
     )
 }}

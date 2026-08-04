@@ -3,7 +3,7 @@
         schema='staging',
         materialized='table',
         indexes=[
-            {'columns': ['deposit_id'], 'unique': True}
+            {'columns': ['deposit_date']}
         ]
     )
 }}

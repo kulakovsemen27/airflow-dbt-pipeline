@@ -3,8 +3,7 @@
         schema='data_mart',
         materialized='table',
         indexes=[
-            {'columns': ['deposit_id'], 'unique': True},
-            {'columns': ['deposit_date', 'player_id']}
+            {'columns': ['deposit_date']}
         ]
     )
 }}

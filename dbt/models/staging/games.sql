@@ -1,10 +1,7 @@
 {{
     config(
         schema='staging',
-        materialized='table',
-        indexes=[
-            {'columns': ['bet_id'], 'unique': True}
-        ]
+        materialized='table'
     )
 }}
 
