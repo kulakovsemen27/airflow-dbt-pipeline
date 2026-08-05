@@ -3,10 +3,6 @@
         schema='data_mart_report',
         materialized='table',
         indexes=[
-            {
-                'columns': ['country', 'registration_type', 'activity_date'],
-                'unique': True
-            },
             {'columns': ['activity_date']}
         ]
     )

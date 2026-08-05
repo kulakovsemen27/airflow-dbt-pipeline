@@ -3,7 +3,7 @@
         schema='staging',
         materialized='table',
         indexes=[
-            {'columns': ['rate_date', 'currency'], 'unique': True}
+            {'columns': ['rate_date']}
         ]
     )
 }}
