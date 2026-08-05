@@ -1,0 +1,22 @@
+# Metabase dashboard
+
+Дашборд `Metrics summary` построен на данных `data_mart_report.metrics_overview`. Все денежные показатели отображаются в USD.
+
+## Overview
+
+Вкладка показывает общую динамику ставок, депозитов и выводов. Карточки слева содержат значение за последний выбранный период и изменение относительно предыдущего периода.
+
+![Metrics summary overview](overview_tab.png)
+
+## Breakdown
+
+Вкладка показывает те же показатели в разрезе стран регистрации игроков.
+
+![Metrics summary breakdown](breakdown_tab.png)
+
+## Filters
+
+- `Period Type` — временная гранулярность графиков.
+- `Period` — анализируемый диапазон дат.
+- `Country` — страна регистрации игрока.
+- `Registration Type` — тип регистрации игрока.
