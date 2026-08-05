@@ -9,12 +9,12 @@ RUN apt-get update \
 
 USER airflow
 
-COPY requirements.txt /requirements.txt
+COPY docker/airflow/airflow-requirements.txt /airflow-requirements.txt
 COPY docker/airflow/dbt-requirements.txt /dbt-requirements.txt
 
 RUN pip install --no-cache-dir \
     "apache-airflow==${AIRFLOW_VERSION}" \
-    -r /requirements.txt
+    -r /airflow-requirements.txt
 
 RUN python -m venv /home/airflow/.dbt-venv \
     && /home/airflow/.dbt-venv/bin/pip install --no-cache-dir \
