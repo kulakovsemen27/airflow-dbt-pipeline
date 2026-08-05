@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.bash import BashOperator
@@ -60,6 +60,10 @@ with DAG(
     schedule="@monthly",
     catchup=False,
     max_active_runs=1,
+    default_args={
+        "retries": 2,
+        "retry_delay": timedelta(minutes=1),
+    },
 ) as dag:
     start_task = EmptyOperator(
         task_id="start",
