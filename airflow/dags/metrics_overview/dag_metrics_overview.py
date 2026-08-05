@@ -65,6 +65,7 @@ with DAG(
         task_id="start",
     )
 
+    # Reload source data into raw tables.
     with TaskGroup(group_id="raw") as raw_group:
         raw_loaded_task = EmptyOperator(
             task_id="raw_loaded",
@@ -88,6 +89,7 @@ with DAG(
 
             truncate_task >> load_task >> raw_loaded_task
 
+    # Build and test cleaned staging models.
     with TaskGroup(group_id="staging") as staging_group:
         staging_models_loaded_task = EmptyOperator(
             task_id="staging_models_loaded",
@@ -117,6 +119,7 @@ with DAG(
             load_staging_task >> staging_models_loaded_task
             staging_models_loaded_task >> test_staging_task >> staging_completed_task
 
+    # Build dimensions and facts before player metrics.
     with TaskGroup(group_id="data_mart") as data_mart_group:
         data_mart_completed_task = EmptyOperator(
             task_id="data_mart_completed",
@@ -178,6 +181,7 @@ with DAG(
         load_player_metrics_task >> test_player_metrics_task
         test_player_metrics_task >> data_mart_completed_task
 
+    # Build and test reporting models.
     with TaskGroup(group_id="data_mart_report") as data_mart_report_group:
         load_metrics_overview_task = BashOperator(
             task_id="load_metrics_overview",
