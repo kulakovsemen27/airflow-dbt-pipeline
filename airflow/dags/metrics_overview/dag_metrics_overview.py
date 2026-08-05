@@ -100,7 +100,7 @@ with DAG(
         for table in TABLES:
             load_staging_task = BashOperator(
                 task_id=f"load_staging_{table}",
-                bash_command=DBT_COMMANDS["load_staging"].format(table=table),
+                bash_command=DBT_COMMANDS["load_staging"].format(model=table),
                 cwd=DBT_PROJECT_DIR,
                 env=STAGING_DBT_PATHS[table],
                 append_env=True,
@@ -108,7 +108,7 @@ with DAG(
 
             test_staging_task = BashOperator(
                 task_id=f"test_staging_{table}",
-                bash_command=DBT_COMMANDS["test_staging"].format(table=table),
+                bash_command=DBT_COMMANDS["test_staging"].format(model=table),
                 cwd=DBT_PROJECT_DIR,
                 env=STAGING_DBT_PATHS[table],
                 append_env=True,
