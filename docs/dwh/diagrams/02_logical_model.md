@@ -2,6 +2,8 @@
 
 Логическая модель переводит бизнес-сущности из концептуальной модели в размерную модель. Она описывает таблицы, атрибуты, grain и связи, но пока не определяет PostgreSQL-типы, индексы и способы физической загрузки.
 
+![Логическая модель DWH](02_logical_model.png)
+
 ## Слой `data_mart`
 
 ### Измерения
@@ -136,6 +138,6 @@ flowchart LR
     FW["fact_withdrawal"] --> PM
     FB["fact_bet"] --> PM
     PM --> MO["metrics_overview"]
-    DP --> MO
+    DP["dim_player"] --> MO
     MO --> MS["monthly_summary"]
 ```
