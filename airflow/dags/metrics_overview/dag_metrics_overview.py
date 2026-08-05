@@ -135,7 +135,11 @@ with DAG(
 
             test_model_task = BashOperator(
                 task_id=f"test_{model}",
-                bash_command=DBT_COMMANDS["test_data_mart"].format(model=model),
+                bash_command=DBT_COMMANDS[
+                    "test_data_mart_totals"
+                    if model in FACT_MODELS
+                    else "test_data_mart"
+                ].format(model=model),
                 cwd=DBT_PROJECT_DIR,
                 env=DATA_MART_DBT_PATHS[model],
                 append_env=True,
@@ -160,7 +164,7 @@ with DAG(
 
         test_player_metrics_task = BashOperator(
             task_id="test_player_metrics",
-            bash_command=DBT_COMMANDS["test_data_mart"].format(
+            bash_command=DBT_COMMANDS["test_data_mart_totals"].format(
                 model=PLAYER_METRICS_MODEL,
             ),
             cwd=DBT_PROJECT_DIR,
