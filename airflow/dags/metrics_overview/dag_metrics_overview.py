@@ -32,6 +32,7 @@ FACT_MODELS = (
 )
 PLAYER_METRICS_MODEL = "player_metrics"
 DATA_MART_REPORT_MODEL = "metrics_overview"
+MONTHLY_SUMMARY_MODEL = "monthly_summary"
 STAGING_DBT_PATHS = {
     table: {
         "DBT_TARGET_PATH": f"/tmp/dbt/staging/{table}/target",
@@ -47,8 +48,8 @@ DATA_MART_DBT_PATHS = {
     for model in DIMENSION_MODELS + FACT_MODELS + (PLAYER_METRICS_MODEL,)
 }
 DATA_MART_REPORT_DBT_PATHS = {
-    "DBT_TARGET_PATH": f"/tmp/dbt/data_mart_report/{DATA_MART_REPORT_MODEL}/target",
-    "DBT_LOG_PATH": f"/tmp/dbt/data_mart_report/{DATA_MART_REPORT_MODEL}/logs",
+    "DBT_TARGET_PATH": "/tmp/dbt/data_mart_report/target",
+    "DBT_LOG_PATH": "/tmp/dbt/data_mart_report/logs",
 }
 POSTGRES_CONN_ID = "dwh_postgres"
 
@@ -194,6 +195,16 @@ with DAG(
             append_env=True,
         )
 
+        build_monthly_summary_task = BashOperator(
+            task_id="build_monthly_summary",
+            bash_command=DBT_COMMANDS["build_data_mart_report"].format(
+                model=MONTHLY_SUMMARY_MODEL,
+            ),
+            cwd=DBT_PROJECT_DIR,
+            env=DATA_MART_REPORT_DBT_PATHS,
+            append_env=True,
+        )
+
         data_mart_report_completed_task = EmptyOperator(
             task_id="data_mart_report_completed",
         )
@@ -201,6 +212,7 @@ with DAG(
         (
             load_metrics_overview_task
             >> test_metrics_overview_task
+            >> build_monthly_summary_task
             >> data_mart_report_completed_task
         )
 

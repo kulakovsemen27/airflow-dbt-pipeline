@@ -32,3 +32,31 @@ models:
         description: Timestamp when the report model was built.
         tests:
           - not_null
+
+  - name: monthly_summary
+    description: Monthly financial and betting metrics by country.
+    columns:
+      - name: activity_month
+        description: First day of the month for which the metrics were aggregated.
+        tests:
+          - not_null
+      - name: country
+        description: Country where the players registered.
+        tests:
+          - not_null
+      - name: deposits_amount_usd
+        description: Total deposit amount in US dollars for the country and month.
+        tests:
+          - not_null
+      - name: withdrawals_amount_usd
+        description: Total withdrawal amount in US dollars for the country and month.
+        tests:
+          - not_null
+      - name: bets_amount_usd
+        description: Total bet amount in US dollars for the country and month.
+        tests:
+          - not_null
+      - name: loaded_at
+        description: Latest source load timestamp included in the summary.
+        tests:
+          - not_null

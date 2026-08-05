@@ -25,4 +25,8 @@ DBT_COMMANDS = {
         "/home/airflow/.dbt-venv/bin/dbt test "
         "--select path:models/data_mart_report/{model}.sql"
     ),
+    "build_data_mart_report": (
+        "/home/airflow/.dbt-venv/bin/dbt build "
+        "--select path:models/data_mart_report/{model}.sql"
+    ),
 }
