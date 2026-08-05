@@ -56,7 +56,7 @@ POSTGRES_CONN_ID = "dwh_postgres"
 with DAG(
     dag_id="metrics_overview",
     start_date=datetime(2026, 8, 1),
-    schedule=None,
+    schedule="@monthly",
     catchup=False,
     max_active_runs=1,
 ) as dag:
