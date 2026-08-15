@@ -1,4 +1,4 @@
-nda_test_task:
+airflow_dbt_pipeline:
   target: docker
 
   outputs:

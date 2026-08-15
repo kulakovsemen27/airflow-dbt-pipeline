@@ -1,4 +1,4 @@
-name: nda_test_task
+name: airflow_dbt_pipeline
 
 x-airflow-common: &airflow-common
   image: nda-airflow:2.10.5
