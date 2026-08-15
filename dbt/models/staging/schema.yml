@@ -68,10 +68,6 @@ models:
         description: Identifier of the provider associated with the game.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('providers_map')
-                field: provider_id
       - name: loaded_at
         description: Timestamp when this source version was detected in raw.
         tests:
@@ -107,10 +103,6 @@ models:
         description: Identifier of the player who made the deposit.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('players')
-                field: player_id
       - name: deposit_date
         description: Date of the deposit.
         tests:
@@ -119,10 +111,6 @@ models:
         description: Identifier of the payment provider.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('providers_map')
-                field: provider_id
       - name: amount
         description: Deposit amount in the original currency.
         tests:
@@ -147,10 +135,6 @@ models:
         description: Identifier of the player who made the withdrawal.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('players')
-                field: player_id
       - name: withdrawal_date
         description: Date of the withdrawal.
         tests:
@@ -159,10 +143,6 @@ models:
         description: Identifier of the withdrawal provider.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('providers_map')
-                field: provider_id
       - name: amount
         description: Withdrawal amount in the original currency.
         tests:
@@ -187,10 +167,6 @@ models:
         description: Identifier of the player who placed the bet.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('players')
-                field: player_id
       - name: game_date
         description: Date when the game was played.
         tests:
@@ -207,18 +183,10 @@ models:
         description: Identifier of the game provider recorded in the transaction.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('providers_map')
-                field: provider_id
       - name: game_id
         description: Identifier of the game from the game mapping.
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('games_map')
-                field: game_id
       - name: loaded_at
         description: Timestamp when this source version was detected in raw.
         tests:

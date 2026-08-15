@@ -41,6 +41,14 @@ FACT_MODELS = (
     "fact_withdrawal",
     "fact_bet",
 )
+DATA_MART_INPUTS = {
+    "dim_player": ("players",),
+    "dim_provider": ("providers_map",),
+    "dim_game": ("games_map",),
+    "fact_deposit": ("deposits", "currency_rates"),
+    "fact_withdrawal": ("withdrawals", "currency_rates"),
+    "fact_bet": ("games", "currency_rates"),
+}
 PLAYER_METRICS_MODEL = "player_metrics"
 DATA_MART_REPORT_MODEL = "metrics_overview"
 MONTHLY_SUMMARY_MODEL = "monthly_summary"
@@ -82,13 +90,11 @@ with DAG(
     )
 
     # Incrementally load source data into raw tables.
-    with TaskGroup(group_id="raw") as raw_group:
-        raw_loaded_task = EmptyOperator(
-            task_id="raw_loaded",
-        )
+    with TaskGroup(group_id="raw"):
+        raw_load_tasks = {}
 
         for table, load_config in TABLES.items():
-            load_task = PythonOperator(
+            raw_load_tasks[table] = PythonOperator(
                 task_id=f"load_{table}",
                 python_callable=load_table,
                 op_kwargs={
@@ -99,20 +105,15 @@ with DAG(
                 },
             )
 
-            load_task >> raw_loaded_task
+            start_task >> raw_load_tasks[table]
 
     # Build and test cleaned staging models.
-    with TaskGroup(group_id="staging") as staging_group:
-        staging_models_loaded_task = EmptyOperator(
-            task_id="staging_models_loaded",
-        )
-
-        staging_completed_task = EmptyOperator(
-            task_id="staging_completed",
-        )
+    with TaskGroup(group_id="staging"):
+        staging_load_tasks = {}
+        staging_test_tasks = {}
 
         for table in TABLES:
-            load_staging_task = BashOperator(
+            staging_load_tasks[table] = BashOperator(
                 task_id=f"load_staging_{table}",
                 bash_command=DBT_COMMANDS["load_staging"].format(model=table),
                 cwd=DBT_PROJECT_DIR,
@@ -120,7 +121,7 @@ with DAG(
                 append_env=True,
             )
 
-            test_staging_task = BashOperator(
+            staging_test_tasks[table] = BashOperator(
                 task_id=f"test_staging_{table}",
                 bash_command=DBT_COMMANDS["test_staging"].format(model=table),
                 cwd=DBT_PROJECT_DIR,
@@ -128,16 +129,15 @@ with DAG(
                 append_env=True,
             )
 
-            load_staging_task >> staging_models_loaded_task
-            staging_models_loaded_task >> test_staging_task >> staging_completed_task
+            (
+                raw_load_tasks[table]
+                >> staging_load_tasks[table]
+                >> staging_test_tasks[table]
+            )
 
     # Build dimensions and facts before player metrics.
-    with TaskGroup(group_id="data_mart") as data_mart_group:
-        data_mart_completed_task = EmptyOperator(
-            task_id="data_mart_completed",
-        )
-
-        fact_test_tasks = {}
+    with TaskGroup(group_id="data_mart"):
+        data_mart_test_tasks = {}
 
         for model in DIMENSION_MODELS + FACT_MODELS:
             load_model_task = BashOperator(
@@ -148,7 +148,7 @@ with DAG(
                 append_env=True,
             )
 
-            test_model_task = BashOperator(
+            data_mart_test_tasks[model] = BashOperator(
                 task_id=f"test_{model}",
                 bash_command=DBT_COMMANDS[
                     "test_data_mart_totals"
@@ -160,12 +160,10 @@ with DAG(
                 append_env=True,
             )
 
-            load_model_task >> test_model_task
+            for table in DATA_MART_INPUTS[model]:
+                staging_test_tasks[table] >> load_model_task
 
-            if model in FACT_MODELS:
-                fact_test_tasks[model] = test_model_task
-            else:
-                test_model_task >> data_mart_completed_task
+            load_model_task >> data_mart_test_tasks[model]
 
         load_player_metrics_task = BashOperator(
             task_id="load_player_metrics",
@@ -187,14 +185,13 @@ with DAG(
             append_env=True,
         )
 
-        for fact_test_task in fact_test_tasks.values():
-            fact_test_task >> load_player_metrics_task
+        for model in FACT_MODELS:
+            data_mart_test_tasks[model] >> load_player_metrics_task
 
         load_player_metrics_task >> test_player_metrics_task
-        test_player_metrics_task >> data_mart_completed_task
 
     # Build and test reporting models.
-    with TaskGroup(group_id="data_mart_report") as data_mart_report_group:
+    with TaskGroup(group_id="data_mart_report"):
         load_metrics_overview_task = BashOperator(
             task_id="load_metrics_overview",
             bash_command=DBT_COMMANDS["load_data_mart_report"].format(
@@ -225,26 +222,20 @@ with DAG(
             append_env=True,
         )
 
-        data_mart_report_completed_task = EmptyOperator(
-            task_id="data_mart_report_completed",
-        )
-
         (
             load_metrics_overview_task
             >> test_metrics_overview_task
             >> build_monthly_summary_task
-            >> data_mart_report_completed_task
         )
+
+        data_mart_test_tasks["dim_player"] >> load_metrics_overview_task
+        test_player_metrics_task >> load_metrics_overview_task
 
     finish_task = EmptyOperator(
         task_id="finish",
     )
 
-    (
-        start_task
-        >> raw_group
-        >> staging_group
-        >> data_mart_group
-        >> data_mart_report_group
-        >> finish_task
-    )
+    for model in ("dim_provider", "dim_game"):
+        data_mart_test_tasks[model] >> finish_task
+
+    build_monthly_summary_task >> finish_task
