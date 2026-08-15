@@ -90,6 +90,8 @@ password: postgres_password
 4. При необходимости подключиться к PostgreSQL и проверить схемы и таблицы.
 5. Посмотреть [документацию DWH](docs/dwh/README.md) и [скриншоты Metabase](docs/metabase/README.md).
 
+DAG настроен на ежемесячный запуск по расписанию `@monthly` и также поддерживает ручной запуск через Airflow.
+
 ## dbt Docs и lineage
 
 После успешного выполнения DAG можно сгенерировать документацию dbt:
@@ -134,10 +136,10 @@ docker compose run --rm -p 127.0.0.1:8081:8081 dbt docs serve --host 0.0.0.0 --p
 docker compose down
 ```
 
-Полностью удалить окружение вместе с данными PostgreSQL, Airflow и конфигурацией Metabase:
+Полностью удалить окружение вместе с данными PostgreSQL, метаданными Airflow и конфигурацией Metabase:
 
 ```bash
 docker compose down -v
 ```
 
-Команда с `-v` безвозвратно удаляет локальные данные проекта.
+Команда с `-v` безвозвратно удаляет Docker volumes проекта. Локальные логи Airflow в каталоге `airflow/logs` сохраняются.
