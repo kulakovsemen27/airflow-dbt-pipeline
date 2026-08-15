@@ -29,7 +29,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the report model was built.
+        description: Latest upstream load timestamp included in the report row.
         tests:
           - not_null
 

@@ -22,7 +22,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the dimension was built.
+        description: Latest upstream load timestamp included in the dimension row.
         tests:
           - not_null
 
@@ -39,7 +39,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the dimension was built.
+        description: Latest upstream load timestamp included in the dimension row.
         tests:
           - not_null
 
@@ -56,7 +56,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the dimension was built.
+        description: Latest upstream load timestamp included in the dimension row.
         tests:
           - not_null
 
@@ -93,7 +93,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the fact was built.
+        description: Latest upstream load timestamp included in the fact row.
         tests:
           - not_null
 
@@ -130,7 +130,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the fact was built.
+        description: Latest upstream load timestamp included in the fact row.
         tests:
           - not_null
 
@@ -171,7 +171,7 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the fact was built.
+        description: Latest upstream load timestamp included in the fact row.
         tests:
           - not_null
 
@@ -199,6 +199,6 @@ models:
         tests:
           - not_null
       - name: loaded_at
-        description: Timestamp when the aggregate model was built.
+        description: Latest fact load timestamp included in the aggregate row.
         tests:
           - not_null
