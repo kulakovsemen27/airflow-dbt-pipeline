@@ -7,3 +7,6 @@ CREATE TABLE IF NOT EXISTS raw.withdrawals (
     currency TEXT,
     loaded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS withdrawals_date_idx
+    ON raw.withdrawals (withdrawal_date);

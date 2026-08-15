@@ -4,22 +4,33 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
-from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.utils.task_group import TaskGroup
 
 from metrics_overview.scripts.dbt_commands import DBT_COMMANDS, DBT_PROJECT_DIR
 from metrics_overview.scripts.load_raw import load_table
 
 
-TABLES = (
-    "players",
-    "providers_map",
-    "games_map",
-    "currency_rates",
-    "deposits",
-    "withdrawals",
-    "games",
-)
+TABLES = {
+    "players": {"key_columns": ("id",)},
+    "providers_map": {"key_columns": ("id",)},
+    "games_map": {"key_columns": ("id",)},
+    "currency_rates": {
+        "key_columns": ("date", "currency"),
+        "date_column": "date",
+    },
+    "deposits": {
+        "key_columns": ("id",),
+        "date_column": "deposit_date",
+    },
+    "withdrawals": {
+        "key_columns": ("id",),
+        "date_column": "withdrawal_date",
+    },
+    "games": {
+        "key_columns": ("id",),
+        "date_column": "game_date",
+    },
+}
 DIMENSION_MODELS = (
     "dim_player",
     "dim_provider",
@@ -52,6 +63,7 @@ DATA_MART_REPORT_DBT_PATHS = {
     "DBT_LOG_PATH": "/tmp/dbt/data_mart_report/logs",
 }
 POSTGRES_CONN_ID = "dwh_postgres"
+LOOKBACK_DAYS = 30
 
 
 with DAG(
@@ -69,29 +81,25 @@ with DAG(
         task_id="start",
     )
 
-    # Reload source data into raw tables.
+    # Incrementally load source data into raw tables.
     with TaskGroup(group_id="raw") as raw_group:
         raw_loaded_task = EmptyOperator(
             task_id="raw_loaded",
         )
 
-        for table in TABLES:
-            truncate_task = SQLExecuteQueryOperator(
-                task_id=f"truncate_{table}",
-                conn_id=POSTGRES_CONN_ID,
-                sql=f"TRUNCATE TABLE raw.{table}",
-            )
-
+        for table, load_config in TABLES.items():
             load_task = PythonOperator(
                 task_id=f"load_{table}",
                 python_callable=load_table,
                 op_kwargs={
                     "table": table,
-                    "conn_id": POSTGRES_CONN_ID,
+                    **load_config,
+                    "dwh_conn_id": POSTGRES_CONN_ID,
+                    "lookback_days": LOOKBACK_DAYS,
                 },
             )
 
-            truncate_task >> load_task >> raw_loaded_task
+            load_task >> raw_loaded_task
 
     # Build and test cleaned staging models.
     with TaskGroup(group_id="staging") as staging_group:
